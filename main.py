@@ -1,3 +1,29 @@
+import json
+from pathlib import Path
+
+DATA_FILE = Path("items.json")
+
+def load_items() -> list:
+    if not DATA_FILE.exists():
+        return []
+    try:
+        with DATA_FILE.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, list):
+            return data
+    except (json.JSONDecoderError, OSError):
+        pass
+
+    print("Warning: items.json could not be loaded. Starting with an empty list.")
+    return []
+
+def save_items(items: list) -> None:
+    try:
+        with DATA_FILE.open("w", encoding="utf-8") as f:
+            json.dump(items, f, ensure_ascii=False, indent=2)
+    except OSError:
+        print("Warning: items.json could not be saved")
+
 def print_menu() -> None:
     print_line()
     print("Welcome to the Shopping CLI")
@@ -27,6 +53,7 @@ def add_item(items: list) -> None:
     }
 
     items.append(item)
+    save_items(items)
     print("Item added successfully!")
 
     print("You entered: ")
@@ -60,6 +87,7 @@ def remove_item(items: list) -> None:
         return
 
     removed_item = items.pop(index-1)
+    save_items(items)
     print(f"Item removed: {removed_item['name']}")
 
 def calculate_total(items: list) -> None:
@@ -74,7 +102,7 @@ def calculate_total(items: list) -> None:
     print_line()
 
 def main() -> None:
-    items = []
+    items = load_items()
     running = True
 
     while running:
@@ -90,6 +118,7 @@ def main() -> None:
         elif choice == "4":
             calculate_total(items)
         elif choice == "0":
+            save_items(items)
             print("Goodbye!")
             break
         else:

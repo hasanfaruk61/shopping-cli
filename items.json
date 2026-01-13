@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Tastatur",
+    "qty": 456,
+    "price": 123.0
+  },
+  {
+    "name": "maus",
+    "qty": 34,
+    "price": 23.0
+  }
+]
